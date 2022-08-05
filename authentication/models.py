@@ -27,9 +27,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
     character2 = models.IntegerField(default=67, blank=True, null=True)
     character3 = models.IntegerField(default=72, blank=True, null=True)
 
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-    mpoly = models.MultiPolygonField()
+    longitude = models.FloatField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    mpoly = models.MultiPolygonField(null=True, blank=True)
 
     # Secondary Data
     dark_theme = models.BooleanField(default=False)
