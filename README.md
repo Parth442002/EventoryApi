@@ -1,3 +1,9 @@
-### Django Api Service
+![alt text](https://community-cdn-digitalocean-com.global.ssl.fastly.net/tPcfLdbbBNdgsYkC1Tr4ymm2)
 
-## Database hosted on AWS RDS Postgresql14
+# Production Ready Django Api Service
+
+## Created using AWS Ecosystem
+
+### AWS RDS PostGIS Database ✅
+
+### AWS S3 Bucked for Static Storage ✅
