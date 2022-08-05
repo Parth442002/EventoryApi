@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+
 urlpatterns = [
     # Local Apps
+    path("auth/account/", include("authentication.urls")),
 
     # Preconfigured Apps
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('auth/account/register/', include('dj_rest_auth.registration.urls')),
 ]

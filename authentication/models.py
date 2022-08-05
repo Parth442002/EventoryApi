@@ -2,12 +2,17 @@ from django.contrib.gis.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .manager import AccountManager
+import uuid
 
 
 class Account(AbstractBaseUser, PermissionsMixin):
     '''
     CustomAccount Model
     '''
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
     primary_identifier = models.CharField(unique=True, max_length=200)
 
     email = models.EmailField(verbose_name="Email",
