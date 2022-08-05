@@ -1,2 +1,3 @@
-# EventoryApi
-Django Based Api Service
+### Django Api Service
+
+## Database hosted on AWS RDS Postgresql14
