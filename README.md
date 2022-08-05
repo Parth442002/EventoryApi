@@ -1,4 +1,4 @@
-![alt text](https://community-cdn-digitalocean-com.global.ssl.fastly.net/tPcfLdbbBNdgsYkC1Tr4ymm2)
+![alt text](./readmeImg.png)
 
 # Production Ready Django Api Service
 
