@@ -31,6 +31,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
     latitude = models.FloatField()
     mpoly = models.MultiPolygonField()
 
+    # Secondary Data
+    dark_theme = models.BooleanField(default=False)
+
     is_verified = models.BooleanField(default=False)
 
     is_superuser = models.BooleanField(default=False)

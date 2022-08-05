@@ -59,7 +59,7 @@ INSTALLED_APPS = [
 
 
     # Local Apps
-    "account"
+    'authentication',
 ]
 
 SITE_ID = 1
@@ -159,3 +159,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Temporary Media Settings
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+# AUTH MODEL
+AUTH_USER_MODEL = "authentication.Account"
