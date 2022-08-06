@@ -3,16 +3,21 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status, permissions
+import environ
+from twilio.rest import Client
 from .serializers import MyTokenObtainPairSerializer, AccountDetailsSerializer
 import pyotp
 from .permissions import isVerified
+from .helpers import sendVerificationMail, sendVerificationSMS
 
 from django.contrib.auth import get_user_model
 user_model = get_user_model()
 
+env = environ.Env()
+
 
 class AccountLoginView(TokenObtainPairView):
-    permission_classes = (permissions.AllowAny)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
 
 
@@ -48,14 +53,28 @@ class AccountDetailsView(APIView):
 class OtpVerifyAccountView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
+    Createdotp = pyotp.TOTP('base32secret3232', digits=4).now()
+
+    def get(self, request):
+        if request.user.primary_identifier == request.user.email:
+            response = sendVerificationMail(
+                request.user.email, self.Createdotp)
+            return Response({
+                "message": "Otp Sent Successfully",
+                "identifier": request.user.email,
+                "data": response
+            })
+        if request.user.primary_identifier == request.user.phone:
+            response = sendVerificationSMS(request.user.phone, self.Createdotp)
+            return Response({
+                "message": "Otp Sent Successfully",
+                "identifier": request.user.phone,
+                "data": response
+            })
+
     def post(self, request):
-        #original_otp = pyotp.TOTP('base32secret3232', digits=4).now()
-        # print(original_otp)
-
-        user_input = request.data['otp']
-        backend_otp = 5460
-        if user_input == backend_otp:
-
+        userInputOtp = request.data['otp']
+        if int(userInputOtp) == int(self.Createdotp):
             # Getting the Current Users intance
             current_user = user_model.objects.get(
                 primary_identifier=request.user)
@@ -68,7 +87,7 @@ class OtpVerifyAccountView(APIView):
 
 
 class CheckIsVerifiedView(APIView):
-    permission_classes = [isVerified]
+    permission_classes = (isVerified,)
 
     def get(self, request):
         return Response(True)
