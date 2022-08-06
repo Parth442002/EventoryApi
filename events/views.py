@@ -17,7 +17,7 @@ class AllEventsView(APIView):
 
 class CreateEventView(APIView):
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         data = request.data
         event_media = []
         new_event = Event.objects.create(
