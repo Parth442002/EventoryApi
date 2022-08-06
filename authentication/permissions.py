@@ -16,6 +16,8 @@ class isVerified(permissions.BasePermission):
         if request.user.is_authenticated and request.user.is_verified == False:
             if request.method in ["GET"]:
                 return True
+        else:
+            return False
 
     def has_object_permission(self, request, view, obj):
         """

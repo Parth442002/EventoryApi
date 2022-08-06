@@ -1,6 +1,3 @@
-from copyreg import constructor
-from string import digits
-from urllib import response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,13 +5,14 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status, permissions
 from .serializers import MyTokenObtainPairSerializer, AccountDetailsSerializer
 import pyotp
-from .isVerified import isVerified
+from .permissions import isVerified
 
 from django.contrib.auth import get_user_model
 user_model = get_user_model()
 
 
 class AccountLoginView(TokenObtainPairView):
+    permission_classes = (permissions.AllowAny)
     serializer_class = MyTokenObtainPairSerializer
 
 
@@ -27,7 +25,7 @@ class AccountLogoutView(APIView):
             refresh_token = RefreshToken(rtoken)
 
             atoken = request.data["access_token"]
-            access_token = RefreshToken(atoken)
+            access_token = AccessToken(atoken)
 
             refresh_token.blacklist()
             access_token.blacklist()

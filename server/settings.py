@@ -182,8 +182,14 @@ JWT_AUTH_REFRESH_COOKIE = 'refresh_token'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'authentication.permissions.isVerfied',
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
+    ]
 }
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 SIMPLE_JWT = {
