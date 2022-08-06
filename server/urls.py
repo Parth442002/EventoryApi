@@ -20,6 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     # Local Apps
     path("auth/account/", include("authentication.urls")),
+    path("events/", include("events.urls")),
 
     # Preconfigured Apps
     path('admin/', admin.site.urls),
