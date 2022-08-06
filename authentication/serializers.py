@@ -43,7 +43,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         token['primary_identifier'] = user.primary_identifier
-        token["id"] = user.id
+        token["id"] = str(user.id)
 
         return token
 

@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status, permissions
 from .serializers import MyTokenObtainPairSerializer, AccountDetailsSerializer
 import pyotp
+from .isVerified import isVerified
 
 from django.contrib.auth import get_user_model
 user_model = get_user_model()
@@ -46,13 +47,6 @@ class AccountDetailsView(APIView):
         return Response(serializer.data)
 
 
-class BasicView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request):
-        return Response({"MESSAGE": "LETSSS FUCKINGG FOOOOOOO"})
-
-
 class OtpVerifyAccountView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -73,3 +67,13 @@ class OtpVerifyAccountView(APIView):
             return Response({"status": True, "message": "Otp Verified Successfully", })
         else:
             return Response({"status": False, "message": "You Entered the Wrong Otp."})
+
+
+class CheckIsVerifiedView(APIView):
+    permission_classes = [isVerified]
+
+    def get(self, request):
+        return Response(True)
+
+    def post(self, request):
+        return Response(True)
