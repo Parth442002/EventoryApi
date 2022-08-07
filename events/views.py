@@ -1,9 +1,10 @@
+from ast import Return
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from .models import Event, MediaModel, Tags
 from rest_framework.permissions import AllowAny
-from .serializers import EventSeriallizer, TagsSerializer
+from .serializers import EventSerializer, TagsSerializer
 from .permissions import isCreator, TagsPermission
 # Create your views here.
 
@@ -13,7 +14,7 @@ class EventListView(APIView):
 
     def get(self, request):
         querySet = Event.objects.all()
-        serializer = EventSeriallizer(querySet, many=True)
+        serializer = EventSerializer(querySet, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -41,7 +42,7 @@ class CreateEventView(APIView):
             new_event.media.add(media_obj)
 
         new_event.save()
-        serializer = EventSeriallizer(new_event)
+        serializer = EventSerializer(new_event)
 
         return Response(serializer.data)
 
@@ -55,7 +56,7 @@ class GetEventView(APIView):
         except Event.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = EventSeriallizer(event)
+        serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -68,7 +69,7 @@ class EditEventView(APIView):
         except Event.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         # Updating the Event Object
-        serializer = EventSeriallizer(event, data=request.data)
+        serializer = EventSerializer(event, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -88,7 +89,7 @@ class CurrentUserEventsView(APIView):
     def get(self, request):
         creator = request.user
         Userevents = Event.objects.filter(creator=creator)
-        serializer = EventSeriallizer(Userevents, many=True)
+        serializer = EventSerializer(Userevents, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
@@ -111,3 +112,22 @@ class TagsListView(APIView):
         new_tag.save()
         serializer = TagsSerializer(new_tag)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TagsView(APIView):
+    #permission_classes = [TagsPermission, ]
+
+    def has_permission(self, request, view):
+        if request.method == "GET":
+            return True
+        else:
+            return False
+
+    def get(self, request, id):
+        try:
+            tag = Tags.objects.get(id=id)
+        except Tags.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = TagsSerializer(tag)
+        return Response(serializer.data, status=status.HTTP_200_OK)

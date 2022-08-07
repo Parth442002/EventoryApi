@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import CreateEventView, EventListView, GetEventView, EditEventView, CurrentUserEventsView, TagsListView
+from .views import CreateEventView, EventListView, GetEventView, EditEventView, CurrentUserEventsView, TagsListView, TagsView
 
 urlpatterns = [
 
@@ -12,4 +12,5 @@ urlpatterns = [
 
     # Tags EndPoints
     path("tags/", TagsListView.as_view()),
+    path("tags/<uuid:id>/", TagsView.as_view())
 ]

@@ -56,7 +56,7 @@ class TagsPermission(permissions.BasePermission):
 
         if request.user.is_authenticated and request.user.is_verified:
             return True
-        if request.method == "GET":
+        if request.user.is_authenticated and request.method == "GET":
             return True
         else:
             return False
@@ -71,6 +71,8 @@ class TagsPermission(permissions.BasePermission):
         if request.method == "GET":
             return True
         if request.user.is_verified:
+            return True
+        if request.user.is_authenticated == False and request.method == "GET":
             return True
 
         if request.user.is_staff and request.method not in self.edit_methods:

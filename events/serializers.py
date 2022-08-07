@@ -15,7 +15,7 @@ class TagsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class EventSeriallizer(serializers.ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     creator_name = serializers.CharField(source="creator.primary_identifier")
     media = MediaSerializer(many=True)
     tags = TagsSerializer(many=True)
