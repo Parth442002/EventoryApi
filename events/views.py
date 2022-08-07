@@ -1,26 +1,26 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, permissions
-from .models import Event, MediaModel
+from .models import Event, MediaModel, Tags
 from rest_framework.permissions import AllowAny
-from .serializers import EventSeriallizer
-from .permissions import isCreator
+from .serializers import EventSeriallizer, TagsSerializer
+from .permissions import isCreator, TagsPermission
 # Create your views here.
 
 
-class AllEventsView(APIView):
+class EventListView(APIView):
     permission_classes = [AllowAny, ]
 
     def get(self, request):
         querySet = Event.objects.all()
         serializer = EventSeriallizer(querySet, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CreateEventView(APIView):
     def post(self, request):
         data = request.data
-        event_media = []
+        event_media = data["media"]
         new_event = Event.objects.create(
             event_name=data["event_name"],
             creator=request.user,
@@ -60,7 +60,7 @@ class GetEventView(APIView):
 
 
 class EditEventView(APIView):
-    permission_classes = [isCreator]
+    permission_classes = [isCreator, ]
 
     def put(self, request, id):
         try:
@@ -82,3 +82,32 @@ class EditEventView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CurrentUserEventsView(APIView):
+    def get(self, request):
+        creator = request.user
+        Userevents = Event.objects.filter(creator=creator)
+        serializer = EventSeriallizer(Userevents, many=True)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class TagsListView(APIView):
+    permission_classes = [TagsPermission, ]
+
+    def get(self, request):
+        tags = Tags.objects.all()
+        serializer = TagsSerializer(tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        data = request.data
+        new_tag = Tags.objects.create(
+            tag_name=data["tag_name"],
+            tag_desc=data["tag_desc"],
+            bannerImg=data["bannerImg"],
+            posterImg=data["posterImg"]
+        )
+        new_tag.save()
+        serializer = TagsSerializer(new_tag)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
