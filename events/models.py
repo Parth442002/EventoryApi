@@ -1,4 +1,4 @@
-from django.utils import timezone
+from pyexpat import model
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
 import uuid
@@ -27,7 +27,8 @@ class Event(models.Model):
 
     start_time = models.DateTimeField(blank=True, null=True)
     end_time = models.DateTimeField(blank=True, null=True)
-    last_date_to_register = models.DateTimeField(default=end_time)
+    last_date_to_register = models.DateTimeField(blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     bannerImg = models.ImageField(
         upload_to='eventBanners/', null=True, blank=True)
@@ -41,8 +42,6 @@ class Event(models.Model):
     longitude = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
     mpoly = models.MultiPolygonField(null=True, blank=True)
-
-    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.event_name} by {self.creator}"
