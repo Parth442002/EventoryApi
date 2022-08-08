@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .valueCheck import emailValidator, phoneValidator, usernameValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Account
+from .models import Account, FriendRequest
 from dj_rest_auth.registration.serializers import RegisterSerializer
 
 
@@ -49,8 +49,19 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class AccountDetailsSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Account
-        fields = '__all__'
+        fields = ["id", "primary_identifier", "email", "phone", "username",         "fullname", "bio", "avatar", "character1", "character2", "character3",
+                  "longitude", "latitude", "mpoly", "dark_theme", "is_verified",
+                  "is_superuser",
+                  "is_staff",
+                  "is_active",
+                  "date_joined",
+                  "last_login",
+                  "groups",
+                  "user_permissions",
+                  "friends"
+                  ]
         #fields = ['id', 'username', 'email', 'phone', 'is_verified']
         extra_kwargs = {"password": {"write_only": True}}
