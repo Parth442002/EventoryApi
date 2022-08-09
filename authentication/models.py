@@ -28,8 +28,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
     avatar = models.FileField(
         upload_to='userAvatar/', null=True, blank=True)
 
-    friends = models.ManyToManyField("Account", blank=True)
-
     character1 = models.IntegerField(default=22, blank=True, null=True)
     character2 = models.IntegerField(default=67, blank=True, null=True)
     character3 = models.IntegerField(default=72, blank=True, null=True)
@@ -55,18 +53,3 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.primary_identifier
-
-
-class FriendRequest(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False)
-    from_account = models.ForeignKey(
-        Account, related_name="from_account", on_delete=models.CASCADE)
-    to_account = models.ForeignKey(
-        Account, related_name="to_account", on_delete=models.CASCADE)
-    send_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.from_account.primary_identifier+" To "+self.to_account.primary_identifier

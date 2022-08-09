@@ -10,7 +10,7 @@ import pyotp
 from twilio.rest import Client
 from .serializers import MyTokenObtainPairSerializer, AccountDetailsSerializer
 from .permissions import isVerified
-from .models import Account, FriendRequest
+from .models import Account
 from .helpers import sendVerificationMail, sendVerificationSMS
 
 from django.contrib.auth import get_user_model
@@ -97,38 +97,3 @@ class CheckIsVerifiedView(APIView):
 
     def post(self, request):
         return Response(True)
-
-
-class SendFriendRequestView(APIView):
-    permission_classes = [isVerified, ]
-
-    def get(self, request, userId):
-        from_user = request.user
-        try:
-            to_user = user_model.objects.get(id=userId)
-        except user_model.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        friend_request, created = FriendRequest.objects.get_or_create(
-            from_user=from_user,
-            to_user=to_user
-        )
-        if created:
-            return Response(
-                {"data": "Friend Request Sent"},
-                status=status.HTTP_201_CREATED
-            )
-        return Response(
-            {"data": "Friend Request was already Sent."},
-            status=status.HTTP_200_OK
-        )
-
-
-class AcceptFriendRequestView(APIView):
-    def get(self, request, requestID):
-        friend_request = FriendRequest.objects.get(id=requestID)
-        if friend_request.to_user == request.user:
-            friend_request.to_user.friends.add(friend_request.from_user)
-            friend_request.from_user.friends.add(friend_request.to_user)
-            friend_request.delete()
-            return Response(status=status.HTTP_202_ACCEPTED)
-        return Response(status=status.HTTP_200_OK)

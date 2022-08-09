@@ -12,4 +12,6 @@ urlpatterns = [
 
     # Check For isVerfied View
     path('isVerified/', CheckIsVerifiedView.as_view()),
+
+    # Friend's Api's
 ]

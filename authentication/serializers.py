@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .valueCheck import emailValidator, phoneValidator, usernameValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Account, FriendRequest
+from .models import Account
 from dj_rest_auth.registration.serializers import RegisterSerializer
 
 
