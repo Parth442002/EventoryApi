@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     # Local Apps
     'authentication',
     'events',
+    "friendship",
 ]
 
 SITE_ID = 1
