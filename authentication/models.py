@@ -64,7 +64,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.primary_identifier
 
-    def block_user(self, userID):
+    def block_account(self, userID):
         other = Account.objects.get(id=userID)
         if not self.is_blocking(userID):
             self.blocking.add(other)
@@ -73,7 +73,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
         else:
             return False
 
-    def unblock_user(self, userID):
+    def unblock_account(self, userID):
         other = Account.objects.get(id=userID)
         if self.is_blocking(userID):
             self.blocking.remove(other)
@@ -81,3 +81,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
+
+    def checkBlock_account(self, userID):
+        other = Account.objects.get(id=userID)
+        if other in self.blocking:
+            return True
+        return False

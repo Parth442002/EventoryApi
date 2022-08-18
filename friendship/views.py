@@ -5,8 +5,21 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from authentication.models import Account
 from .models import FriendRequest
-from .serializers import ListFriendRequestSerializers, FriendListSerializer
+from .serializers import ListFriendRequestSerializers, SingleFriendSerializer
 # Create your views here.
+
+
+class AllFriendsView(APIView):
+    """
+    Get all the friends of the signed in user.
+    """
+
+    def get(self, request):
+        user = Account.objects.get(id=request.user.id)
+        friends = user.friends.all()
+        print(friends)
+        serializer = SingleFriendSerializer(friends, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AllIncommingFriendRequestsView(APIView):
@@ -46,14 +59,15 @@ class SendFriendRequestView(APIView):
 
     def post(self, request):
         from_account = request.user
-        to_account = request.data["userID"]
+        userID = request.data["userID"]
+        to_account = Account.objects.get(id=userID)
         friend_request, created = FriendRequest.objects.get_or_create(
             from_account=from_account, to_account=to_account,
         )
         if created:
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(friend_request.id, status=status.HTTP_201_CREATED)
         else:
-            return Response(status=status.HTTP_200_OK)
+            return Response(friend_request.id, status=status.HTTP_200_OK)
 
 
 class AcceptFriendRequestView(APIView):
@@ -64,10 +78,10 @@ class AcceptFriendRequestView(APIView):
     def post(self, request):
         requestID = request.data["requestID"]
         friend_request = FriendRequest.objects.get(id=requestID)
-        if friend_request.to_user == request.user:
-            friend_request.to_user.friends.add(friend_request.from_user)
+        if friend_request.to_account == request.user:
+            friend_request.to_account.friends.add(friend_request.from_account)
             # Adding friends for both of the accounts
-            friend_request.from_user.friends.add(friend_request.to_user)
+            friend_request.from_account.friends.add(friend_request.to_account)
             friend_request.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
         else:
@@ -90,14 +104,45 @@ class DeclineFriendRequestView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class AllFriendsView(APIView):
+class RemoveFriendView(APIView):
     """
-    Get all the friends of the signed in user.
+    View to remove a friend
     """
 
-    def get(self, request):
-        user = Account.objects.get(id=request.user.id)
-        friends = user.friends.all()
-        print(friends)
-        serializer = FriendListSerializer(friends)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def post(self, request):
+        current_user = request.user
+        userID = request.data["userID"]
+        friend = current_user.friends.get(id=userID)
+        if friend:
+            current_user.friends.remove(friend)
+            return Response("Its workinggg")
+
+
+class BlockAccountView(APIView):
+    """
+    Api View to Block a certain Account
+    """
+
+    def post(self, request):
+        current_user = request.user
+        userID = request.data["useriD"]
+        if userID:
+            current_user.block_account(userID)
+            return Response(f"{userID} just got blocked", status=status.HTTP_200_OK)
+        else:
+            return Response(f"Could not Block {userID}", status=status.HTTP_400_BAD_REQUEST)
+
+
+class UnBlockAccountView(APIView):
+    """
+    Api View to UnBlock a certain Account
+    """
+
+    def post(self, request):
+        current_user = request.user
+        userID = request.data["useriD"]
+        if userID:
+            current_user.unblock_account(userID)
+            return Response(f"{userID} just got unblocked", status=status.HTTP_200_OK)
+        else:
+            return Response(f"Could not UnBlock {userID}", status=status.HTTP_400_BAD_REQUEST)
