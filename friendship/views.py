@@ -97,9 +97,7 @@ class AllFriendsView(APIView):
 
     def get(self, request):
         user = Account.objects.get(id=request.user.id)
-        if user.exists():
-            friends = user.friends.all()
-            serializer = FriendListSerializer(friends)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        friends = user.friends.all()
+        print(friends)
+        serializer = FriendListSerializer(friends)
+        return Response(serializer.data, status=status.HTTP_200_OK)

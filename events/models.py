@@ -10,7 +10,7 @@ class MediaModel(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    media = models.FileField(upload_to='media/', null=True, blank=True)
+    media = models.FileField(upload_to='eventImages/', null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
 
@@ -23,9 +23,9 @@ class Tags(models.Model):
     tag_desc = models.TextField(max_length=300, blank=True, null=False)
     verified = models.BooleanField(default=False)
     bannerImg = models.ImageField(
-        upload_to='eventBanners/', null=True, blank=True)
+        upload_to='tagBanner/', null=True, blank=True)
     posterImg = models.ImageField(
-        upload_to='eventPosters/', null=True, blank=True)
+        upload_to='tagPoster/', null=True, blank=True)
 
     def __str__(self):
         return self.tag_name

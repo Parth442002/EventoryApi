@@ -6,7 +6,7 @@ from authentication.models import Account
 class ListFriendRequestSerializers(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
-        fields = "__all__"
+        fields = ["id", "from_account", "to_account", "is_active", "send_date"]
 
 
 class SingleFriendSerializer(serializers.ModelSerializer):
@@ -24,4 +24,4 @@ class FriendListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ("friends")
+        fields = ("friends",)

@@ -4,7 +4,7 @@ from .views import AcceptFriendRequestView, AllFriendsView, AllIncommingFriendRe
 urlpatterns = [
 
     # All Friends
-    path("Friends/", AllFriendsView.as_view()),
+    path("", AllFriendsView.as_view()),
 
     # ALL Requests
     path("incomingRequests/", AllIncommingFriendRequestsView.as_view()),

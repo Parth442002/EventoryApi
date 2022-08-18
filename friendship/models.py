@@ -11,9 +11,9 @@ class FriendRequest(models.Model):
         default=uuid.uuid4,
         editable=False)
     from_account = models.ForeignKey(
-        Account, verbose_name="from_account", on_delete=models.CASCADE)
+        Account, related_name="from_account", on_delete=models.CASCADE)
     to_account = models.ForeignKey(
-        Account, verbose_name="to_account", on_delete=models.CASCADE)
+        Account, related_name="to_account", on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     send_date = models.DateTimeField(auto_now_add=True)
 

@@ -21,6 +21,7 @@ urlpatterns = [
     # Local Apps
     path("auth/account/", include("authentication.urls")),
     path("events/", include("events.urls")),
+    path("friends/", include("friendship.urls")),
 
     # Preconfigured Apps
     path('admin/', admin.site.urls),

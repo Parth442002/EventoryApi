@@ -1,3 +1,4 @@
+from pickle import TRUE
 from django.contrib.gis.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -28,6 +29,15 @@ class Account(AbstractBaseUser, PermissionsMixin):
     avatar = models.FileField(
         upload_to='userAvatar/', null=True, blank=True)
 
+    # ACCOUNT RELATIONS WITH OTHERS
+    friends = models.ManyToManyField("Account", blank=True)
+    # Accounts blocked by current User
+    blocking = models.ManyToManyField(
+        'self', related_name='block', blank=True, symmetrical=False)
+    # Accounts the current User is blocked by
+    blocked_by = models.ManyToManyField(
+        'self', related_name='blocked', blank=True, symmetrical=False)
+
     character1 = models.IntegerField(default=22, blank=True, null=True)
     character2 = models.IntegerField(default=67, blank=True, null=True)
     character3 = models.IntegerField(default=72, blank=True, null=True)
@@ -53,3 +63,21 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.primary_identifier
+
+    def block_user(self, userID):
+        other = Account.objects.get(id=userID)
+        if not self.is_blocking(userID):
+            self.blocking.add(other)
+            other.blocked_by.add(self)
+            return True
+        else:
+            return False
+
+    def unblock_user(self, userID):
+        other = Account.objects.get(id=userID)
+        if self.is_blocking(userID):
+            self.blocking.remove(other)
+            other.blocked_by.remove(self)
+            return True
+        else:
+            return False
