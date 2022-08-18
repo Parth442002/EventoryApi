@@ -14,6 +14,7 @@ class FriendRequest(models.Model):
         Account, verbose_name="from_account", on_delete=models.CASCADE)
     to_account = models.ForeignKey(
         Account, verbose_name="to_account", on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
     send_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
